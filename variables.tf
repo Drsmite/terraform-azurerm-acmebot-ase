@@ -729,6 +729,7 @@ variable "service_plan" {
     name           = optional(string, null)
     zone_redundant = optional(bool, false)
     tags           = optional(map(string), null)
+    app_service_environment_id = optional(string,null)
   })
   description = <<DESCRIPTION
 Controls the App Service Plan used by the Function App.
@@ -736,6 +737,8 @@ Controls the App Service Plan used by the Function App.
 - `name` - (Optional) The name of the App Service Plan. When unset, the module generates a CAF-aligned name using the `asp` prefix.
 - `zone_redundant` - (Optional) Whether the App Service Plan is zone redundant. Defaults to `false`. For Flex Consumption (`FC1`), zone redundancy is only available in Azure regions that advertise the `FCZONEREDUNDANCY` capability; leave this `false` in unsupported regions.
 - `tags` - (Optional) Tags to apply to the App Service Plan. When unset, `var.tags` is inherited.
+- 'app_service_environment_id' - (Optional) ID of App Service Environment to attach the App Service Plan to
+
 DESCRIPTION
   default     = {}
   nullable    = false
@@ -744,6 +747,13 @@ DESCRIPTION
     condition     = var.service_plan.name == null || can(regex("^[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9]$", var.service_plan.name))
     error_message = "service_plan.name must contain only letters, numbers, and hyphens, and start and end with a letter or number."
   }
+  validation {
+      condition = var.service_plan.app_service_environment_id == null || can(provider::azapi::parse_resource_id(
+        "Microsoft.Web/hostingEnvironments",
+        var.service_plan.app_service_environment_id
+      ))
+      error_message = "service_plan.app_service_environment_id must be a valid App Service Environment resource ID."
+    }
 }
 
 variable "log_analytics_workspace" {
