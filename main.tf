@@ -125,9 +125,9 @@ module "this" {
   os_type                  = "Linux"
   service_plan_resource_id = module.serverfarm.resource_id
 
-  function_app_uses_fc1  = true
-  fc1_runtime_name       = "dotnet-isolated"
-  fc1_runtime_version    = "10.0"
+  function_app_uses_fc1  = var.service_plan.app_service_environment_id != null ? false: true
+  fc1_runtime_name       = var.service_plan.app_service_environment_id != null ? null : "dotnet-isolated"
+  fc1_runtime_version    = var.service_plan.app_service_environment_id != null ? null : "FC1"
   instance_memory_in_mb  = var.instance_memory_in_mb
   maximum_instance_count = var.maximum_instance_count
 
