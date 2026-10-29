@@ -59,6 +59,7 @@ module "serverfarm" {
   os_type                = "Linux"
   sku_name               = "FC1"
   zone_balancing_enabled = var.service_plan.zone_redundant
+  app_service_environment_id = var.service_plan.app_service_environment_id != null ? var.service_plan.app_service_environment_id : null
 }
 
 resource "azapi_resource" "log_analytics_workspace" {
