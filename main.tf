@@ -57,7 +57,7 @@ module "serverfarm" {
   tags             = var.service_plan.tags != null ? var.service_plan.tags : var.tags
 
   os_type                = "Linux"
-  sku_name               = "FC1"
+  sku_name               = var.service_plan.app_service_environment_id != null ? "I1V2" : "FC1"
   zone_balancing_enabled = var.service_plan.zone_redundant
   app_service_environment_id = var.service_plan.app_service_environment_id != null ? var.service_plan.app_service_environment_id : null
 }
